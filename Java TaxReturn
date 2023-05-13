@@ -1,0 +1,113 @@
+import java.util.*;
+
+public class TaxReturn {
+    private String ssn;
+    private String last;
+    private String first;
+    private String address;
+    private String city;
+    private String state;
+    private String zipCode;
+    private double income;
+    private char status;
+    private double tax;
+    private final double LOWINCOME = 20000;
+    private final double HIGHINCOME = 50000;
+    private final double SINGLELOW = 0.15;
+    private final double SINGLEMED = 0.22;
+    private final double SINGLEHIGH = 0.30;
+    private final double MARRIEDLOW = 0.14;
+    private final double MARRIEDMED = 0.20;
+    private final double MARRIEDHIGH = 0.28;
+
+    public TaxReturn(String socSec, String lastName, String firstName, String add, String cty, String st, String zip, double inc, char stat) {
+        // Set the values of all the fields
+        ssn = socSec;
+        last = lastName;
+        first = firstName;
+        address = add;
+        city = cty;
+        state = st;
+        zipCode = zip;
+        income = inc;
+        status = stat;
+
+        // Calculate the tax liability based on the annual income and marital status
+        if (income <= LOWINCOME) {
+            if (status == 'S' || status == 's') {
+                tax = income * SINGLELOW;
+            } else if (status == 'M' || status == 'm') {
+                tax = income * MARRIEDLOW;
+            }
+        } else if (income <= HIGHINCOME) {
+            if (status == 'S' || status == 's') {
+                tax = income * SINGLEMED;
+            } else if (status == 'M' || status == 'm') {
+                tax = income * MARRIEDMED;
+            }
+        } else {
+            if (status == 'S' || status == 's') {
+                tax = income * SINGLEHIGH;
+            } else if (status == 'M' || status == 'm') {
+                tax = income * MARRIEDHIGH;
+            }
+        }
+    }
+
+    public void display() {
+        System.out.println("Taxpayer ssn: " + ssn + " " + first + " " + last + "\n" +
+                address + "\n" + city + ", " + state + " " + zipCode + "\n" +
+                "Marital status: " + status + "\n" + "Income: $" + income + "  Tax: $" + tax);
+    }
+}
+
+import java.util.*;
+
+public class PrepareTax {
+    public static void main(String[] args) {
+        Scanner input = new Scanner(System.in);
+        String ssn, last, first, address, city, state, zip;
+        double income;
+        char status;
+
+        // Prompt the user for the data needed to create a TaxReturn
+        do {
+            System.out.print("Enter your Social Security number: ");
+            ssn = input.nextLine();
+        } while (!ssn.matches("\\d{3}-\\d{2}-\\d{4}"));
+
+        System.out.print("Enter your first name: ");
+        first = input.nextLine();
+
+        System.out.print("Enter your last name: ");
+        last = input.nextLine();
+
+        System.out.print("Enter your address: ");
+        address = input.nextLine();
+
+        System.out.print("Enter your city: ");
+        city = input.nextLine();
+
+        System.out.print("Enter your state: ");
+        state = input.nextLine();
+
+        do {
+            System.out.print("Enter your Zip code: ");
+            zip = input.nextLine();
+        } while (!zip.matches("\\d{5}"));
+
+        do {
+            System.out.print("Enter marital status (S for single, M for married): ");
+            status = input.nextLine().charAt(0);
+        } while (status != 'S' && status != 's' && status != 'M' && status != 'm');
+
+        do {
+            System.out.print("Enter your annual income: ");
+            income = input.nextDouble();
+        } while (income < 0);
+
+        // Create a TaxReturn object and display its values
+        TaxReturn taxReturn = new TaxReturn(ssn, last, first, address, city, state, zip, income, status);
+        taxReturn.display();
+    }
+}
